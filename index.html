@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head><title>STONE-PAPPER-SCISSORS</title>
+        <style>
+            
+            div{
+                gap:15px;
+                display:flex;
+                justify-content: center;
+                padding-top:50px;
+            }
+            button{
+                padding:15px;
+
+
+            }
+            .panel
+            {   
+                background-color: rgb(208, 208, 224);
+                border-width:2px;
+                border-style:dashed
+            }
+            image{
+                background-color: transparent;
+            }
+        </style>
+            </head>
+        </head>
+    <body>
+        <div class="panel">
+         <img src="Rock.jpg" class="rock" width="150px" 
+         >   
+         <img src="Paper.jpg"  class='paper 'width="150px"
+         >   
+         <img src="Scissors.jpg" class  = 'scissors'  width="150px"> 
+         <button class='reset'>RESET</button>
+          <button onclick="autoPlay();">Auto</button></div>
+         <div><p class="Board"></p></div>
+         <script>
+             faster=(user,cpu,outcome)=>
+            {
+                let line=document.querySelector(".Board");
+                line.innerHTML=`You picked  <img src=${user}.jpg width=40px height=40px> --- Cpu picked  <img src= ${cpu}.jpg width=40px height=40px>   You  ${outcome}`;
+            }
+         </script>
+         <script>
+            let reset=document.querySelector('.reset')
+            reset.addEventListener('click',()=>{
+                if(confirm("Are you sure"))
+                {
+                    scoreCard.Matches=0,scoreCard.Wins=0,scoreCard.Loss=0,scoreCard.Draw=0;
+                    count();
+                }
+            })
+
+            //for auto play
+            let id;
+            let rock=document.querySelector('.rock');
+            let scissors=document.querySelector('.scissors');
+            let paper=document.querySelector('.paper');
+            let rf=()=>{select(1)};
+            let pf=()=>{select(2)};
+            let sf=()=>{select(3)};
+            rock.addEventListener('click',rf)
+            paper.addEventListener('click',pf);
+            scissors.addEventListener('click',sf);
+            let keyFun=(event)=>{
+                let key=event.key
+                if(key=='r')
+                select(1)
+                else if(key=='p')
+                select(2)
+                else if(key=='s')
+                select(3);
+    
+            }
+            document.addEventListener('keydown',keyFun)
+            let on=0;
+            autoPlay=()=>{
+                if(on==0)
+                {
+
+
+                    rock.removeEventListener('click',rf)
+                    paper.removeEventListener('click',pf);
+                    scissors.removeEventListener('click',sf);
+                    document.removeEventListener('keydown',keyFun);
+             id=setInterval(()=>
+            {
+                let autocpu=(Math.floor(Math.random()*3))+1
+                select(autocpu)
+            },5000);on=1;}
+        else{
+            on=0;
+            clearInterval(id);
+            rock.addEventListener('click',rf)
+            paper.addEventListener('click',pf);
+            scissors.addEventListener('click',sf);
+            document.addEventListener('keydown',keyFun);
+
+
+
+
+        }
+        }
+         </script>
+         <script>
+
+            
+            let scoreCard=JSON.parse(localStorage.getItem('scoreCard'));
+            if (!scoreCard)
+            {
+                scoreCard={Matches:0,Wins:0,Loss:0,Draw:0};
+            }
+            let scoreBoard=document.createElement("div");
+            
+            document.body.appendChild(scoreBoard);
+            function count()
+            {   console.log((scoreCard));
+                scoreBoard.textContent=JSON.stringify(scoreCard);
+                localStorage.setItem('scoreCard',JSON.stringify(scoreCard));
+            }
+         </script>  
+         
+        <script>
+            let input;
+            let cpu;
+            let d={1:"Rock",2:"Paper",3:"Scissors"};
+            
+             select=(user)=>
+            {  
+                scoreCard.Matches+=1;
+                
+            cpu=Math.floor(Math.random()*3)+1;
+            
+            if (user==cpu)
+              {  
+            scoreCard.Draw+=1;
+            faster(d[user],d[user],"Draw")
+            }
+             else if (user==1)
+                {  cpu==2?(scoreCard.Loss+=1,faster('Rock','Paper','Lost')) : (scoreCard.Wins+=1,faster('Rock','Scissors','Win'));
+                    
+                }
+                else if (user==2)
+                { cpu==3?(scoreCard.Loss+=1,faster('Paper','Scissors','Lost')) :scoreCard.Wins+=1,faster('Paper','Rock','Win');
+
+                }
+            else{
+                cpu==1? (scoreCard.Loss+=1, faster('Scissors','Rock','Lost') ): (scoreCard.Wins+=1,faster('Scissors','Paper','Win'));
+            
+            
+
+            }
+            console.log(scoreCard.Matches);
+            
+            count();
+            
+ 
+            
+        }
+
+
+        </script>
+    </body>
+</html>
